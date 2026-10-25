@@ -4,7 +4,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { and, eq, isNull } from "drizzle-orm";
+import { createHmac } from "node:crypto";
 import { getDb } from "@/lib/db/client";
 import { mcpTokens } from "@/lib/db/schema";
 import { env } from "@/lib/env";
@@ -37,19 +37,21 @@ const CONSOLE_TOKEN_NAME = "Demo console";
 const g = globalThis as unknown as { consoleToken?: string };
 
 /**
- * The console needs a connector token like any other client. Use MCP_CONSOLE_TOKEN when set;
- * otherwise mint one for this server process (stored hashed, older console tokens revoked).
+ * The console needs a connector token like any other client. Use MCP_CONSOLE_TOKEN when set.
+ * Otherwise derive one from AUTH_SECRET, so every app instance shares the same token (stored
+ * hashed). Revoking it on the admin page cuts the console off until AUTH_SECRET changes.
  */
 async function consoleToken(): Promise<string> {
   if (env.mcpConsoleToken) return env.mcpConsoleToken;
   if (g.consoleToken) return g.consoleToken;
-  const db = getDb();
-  await db
-    .update(mcpTokens)
-    .set({ revokedAt: new Date() })
-    .where(and(eq(mcpTokens.name, CONSOLE_TOKEN_NAME), isNull(mcpTokens.revokedAt)));
-  const token = generateToken();
-  await db.insert(mcpTokens).values({ name: CONSOLE_TOKEN_NAME, tokenHash: hashToken(token) });
+  const secret = process.env.AUTH_SECRET;
+  const token = secret
+    ? `mcp_${createHmac("sha256", secret).update("demo-console-token").digest("base64url")}`
+    : generateToken();
+  await getDb()
+    .insert(mcpTokens)
+    .values({ name: CONSOLE_TOKEN_NAME, tokenHash: hashToken(token) })
+    .onConflictDoNothing({ target: mcpTokens.tokenHash });
   g.consoleToken = token;
   return token;
 }

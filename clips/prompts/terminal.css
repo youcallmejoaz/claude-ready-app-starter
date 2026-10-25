@@ -1,0 +1,16 @@
+/* Clean dark terminal for the prompt replays. No real paths, keys or names. */
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0b1020; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; }
+.win { position: absolute; left: 120px; right: 120px; top: 90px; bottom: 90px; background: #111827; border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.45); overflow: hidden; border: 1px solid #1f2937; }
+.bar { height: 64px; background: #0f172a; display: flex; align-items: center; gap: 12px; padding: 0 26px; border-bottom: 1px solid #1f2937; }
+.dot { width: 16px; height: 16px; border-radius: 50%; background: #334155; }
+.title { margin-left: 18px; color: #94a3b8; font-size: 22px; }
+.body { padding: 44px 56px; color: #e5e7eb; font-size: 34px; line-height: 1.5; }
+.prompt { color: #e5e7eb; white-space: pre-wrap; }
+.prompt .gt { color: #fbbf24; font-weight: 700; margin-right: 18px; }
+.caret { display: inline-block; width: 18px; height: 38px; background: #e5e7eb; vertical-align: -6px; margin-left: 4px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.out { margin-top: 34px; font-size: 29px; line-height: 1.55; }
+.out div { opacity: 0; transform: translateY(8px); transition: opacity 260ms, transform 260ms; white-space: pre-wrap; }
+.out div.show { opacity: 1; transform: none; }
+.ok { color: #4ade80; } .dim { color: #94a3b8; } .warn { color: #fbbf24; } .hl { color: #0b1020; background: #4ade80; padding: 0 8px; border-radius: 6px; }

@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>K03</title><link rel="stylesheet" href="card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .item { display: flex; gap: 28px; align-items: flex-start; border: 3px solid var(--line); border-radius: 24px; padding: 38px 40px; }
+  .item .t { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  .item .d { font-size: 28px; color: var(--ink-2); margin-top: 10px; line-height: 1.35; }
+</style></head><body>
+<div class="frame">
+  <div class="kicker in" style="animation-delay:100ms">Safeguards</div>
+  <h2 class="in" style="animation-delay:250ms">Claude can read. It cannot change.</h2>
+  <div class="grid">
+    <div class="item pop" style="animation-delay:1000ms"><span class="mark good">✓</span><div><div class="t">Read-only database role</div><div class="d">Writes fail in the database itself</div></div></div>
+    <div class="item pop" style="animation-delay:1900ms"><span class="mark good">✓</span><div><div class="t">Token required</div><div class="d">Hashed at rest, revoke any time</div></div></div>
+    <div class="item pop" style="animation-delay:2800ms"><span class="mark good">✓</span><div><div class="t">Audit log</div><div class="d">Every call recorded, blocked ones too</div></div></div>
+    <div class="item pop" style="animation-delay:3700ms"><span class="mark warn">✋</span><div><div class="t">Manual production deploys</div><div class="d">A person approves every release</div></div></div>
+  </div>
+</div>
+</body></html>

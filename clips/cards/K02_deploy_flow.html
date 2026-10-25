@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>K02</title><link rel="stylesheet" href="card.css">
+<style>
+  .flow { display: flex; align-items: stretch; gap: 0; margin-top: 10px; }
+  .step { flex: 1; border: 3px solid var(--line); border-radius: 26px; padding: 40px 34px; min-height: 330px; display: flex; flex-direction: column; gap: 22px; background: #fff; }
+  .step .t { font-size: 46px; font-weight: 800; letter-spacing: -0.02em; }
+  .step .d { font-size: 30px; line-height: 1.35; color: var(--ink-2); }
+  .tag { align-self: flex-start; font-size: 26px; font-weight: 700; padding: 8px 18px; border-radius: 999px; margin-top: auto; }
+  .tag.good { background: var(--green-soft); color: var(--green); }
+  .tag.warn { background: var(--amber-soft); color: var(--amber); }
+  .arrow { width: 90px; display: grid; place-items: center; font-size: 60px; color: #94a3b8; }
+  .step.prod { border-color: var(--amber); }
+</style></head><body>
+<div class="frame">
+  <div class="kicker in" style="animation-delay:100ms">How changes ship</div>
+  <h2 class="in" style="animation-delay:250ms">Staging first. Production only when you approve.</h2>
+  <div class="flow">
+    <div class="step pop" style="animation-delay:1200ms"><span class="mark good">1</span><div class="t">Code change</div><div class="d">Made with Claude Code on its own branch</div></div>
+    <div class="arrow pop" style="animation-delay:1900ms">→</div>
+    <div class="step pop" style="animation-delay:2300ms"><span class="mark good">✓</span><div class="t">Tests</div><div class="d">Run on every push</div><span class="tag good">Automatic</span></div>
+    <div class="arrow pop" style="animation-delay:3000ms">→</div>
+    <div class="step pop" style="animation-delay:3400ms"><span class="mark good">✓</span><div class="t">Staging</div><div class="d">Private, password protected</div><span class="tag good">Automatic</span></div>
+    <div class="arrow pop" style="animation-delay:4100ms">→</div>
+    <div class="step prod pop" style="animation-delay:4500ms"><span class="mark warn">✋</span><div class="t">Production</div><div class="d">Same build that ran on staging</div><span class="tag warn">Manual approval</span></div>
+  </div>
+</div>
+</body></html>

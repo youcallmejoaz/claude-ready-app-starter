@@ -41,12 +41,12 @@ export const UNAUTHORIZED_HTML = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Staging: password required</title>
 <style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f6f8;color:#0f172a;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-  form{background:#fff;padding:32px;border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,.08);width:min(360px,90vw)}
-  h1{font-size:20px;margin:0 0 4px} p{margin:0 0 20px;color:#475569;font-size:14px}
-  label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
-  input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
-  button{margin-top:20px;width:100%;padding:11px;border:0;border-radius:8px;background:#0f766e;color:#fff;font-weight:600;font-size:15px;cursor:pointer}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f6f8;color:#0f172a;font:18px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  form{background:#fff;padding:40px;border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,.08);width:min(460px,90vw)}
+  h1{font-size:26px;line-height:1.25;margin:0 0 8px} p{margin:0 0 24px;color:#475569;font-size:16px}
+  label{display:block;font-size:15px;font-weight:600;margin:14px 0 6px}
+  input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #cbd5e1;border-radius:9px;font-size:17px}
+  button{margin-top:24px;width:100%;padding:13px;border:0;border-radius:8px;background:#0f766e;color:#fff;font-weight:600;font-size:17px;cursor:pointer}
   .err{color:#b91c1c;font-size:13px;margin-top:12px;display:none}
 </style></head>
 <body><form id="f">

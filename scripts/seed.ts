@@ -26,7 +26,8 @@ async function main() {
     }
   }
 
-  await db.execute(sql`TRUNCATE ads_daily_metrics, ads_campaigns, ga4_daily_metrics, ga4_landing_pages_daily, sync_runs`);
+  // Sample data only: this also clears the connector audit log so the demo starts clean.
+  await db.execute(sql`TRUNCATE ads_daily_metrics, ads_campaigns, ga4_daily_metrics, ga4_landing_pages_daily, sync_runs, mcp_audit`);
   await db.insert(schema.users).values(DEMO_USER).onConflictDoNothing();
 
   if (empty) {
@@ -39,7 +40,7 @@ async function main() {
   }
 
   // Replace the demo token on every seed so an old printed token stops working.
-  await db.update(schema.mcpTokens).set({ revokedAt: new Date() }).where(sql`name = 'demo' AND revoked_at IS NULL`);
+  await db.delete(schema.mcpTokens).where(sql`name = 'demo'`);
   const token = generateToken();
   await db.insert(schema.mcpTokens).values({ name: "demo", tokenHash: hashToken(token) });
 
