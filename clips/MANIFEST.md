@@ -21,3 +21,12 @@ data. Durations from ffprobe.
 | K04 | `K04_offer.mp4` | 7.1 s | Card: what you get in a week, running cost labelled as an estimate | 7. Offer |
 
 Stills: `stills/K01_problem.png` to `stills/K04_offer.png`. Check frames: `frames/`.
+
+## Proposal cut
+
+| File | Duration | Voice | Notes |
+|---|---|---|---|
+| `proposal_cut.mp4` | 61.1 s | Kokoro TTS, voice am_michael, speed 1.0 (local, open weights) | 1920 x 1080, 30 fps, H.264 + AAC, voice normalised to -17.1 LUFS integrated, no captions, no music |
+
+Render: `python clips/render_proposal_cut.py --kokoro-dir <dir with kokoro-v1.0.onnx and voices-v1.0.bin>`
+(needs `pip install kokoro-onnx soundfile`). One frame per scene: `proposal_cut_frames/`.
