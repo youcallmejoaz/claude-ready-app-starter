@@ -23,7 +23,7 @@ export function CampaignBars({ rows }: { rows: Row[] }) {
           <div className="bar-track">
             <div className="bar-fill" style={{ width: `${((r.cost_per_conversion ?? 0) / max) * 100}%` }} />
           </div>
-          <span className="bar-value">{r.cost_per_conversion == null ? "–" : money(r.cost_per_conversion)}</span>
+          <span className="bar-value">{r.cost_per_conversion == null ? "-" : money(r.cost_per_conversion)}</span>
           {hover === r.name && (
             <div className="tooltip" style={{ left: "55%", top: 0 }}>
               {r.name}: {money(r.cost)} spent, {r.conversions.toLocaleString("en-US")} conversions

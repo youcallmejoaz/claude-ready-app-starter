@@ -21,7 +21,7 @@ function Prose({ text }: { text: string }) {
 const MONEY_COLS = new Set(["cost", "cpc", "cost_per_conversion"]);
 
 function cell(col: string, v: unknown): string {
-  if (v == null) return "–";
+  if (v == null) return "-";
   if (typeof v === "number") {
     if (MONEY_COLS.has(col)) return v.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
     if (col === "ctr" || col === "conversion_rate") return `${v.toFixed(1)}%`;

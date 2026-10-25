@@ -1,0 +1,51 @@
+name: Deploy to production
+
+# Manual only. A person starts this from the Actions tab, picks a commit that already passed on
+# staging, and a required reviewer on the `production` environment approves it. The images are
+# the exact ones staging ran; nothing is rebuilt.
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Full commit SHA that is running on staging"
+        required: true
+        type: string
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: production # set "Required reviewers" on this environment in GitHub settings
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the commit is on main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "${{ inputs.commit }}" origin/main || {
+            echo "Commit ${{ inputs.commit }} is not on main. Merge staging into main first."; exit 1; }
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Check the images exist (built by the staging deploy)
+        run: |
+          for repo in claude-ready-app claude-ready-mcp; do
+            aws ecr describe-images --repository-name "$repo" --image-ids imageTag="${{ inputs.commit }}" > /dev/null
+          done
+      - name: Roll production services
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          TAG: ${{ inputs.commit }}
+        run: |
+          ./infra/aws/update-service.sh "${{ vars.APP_RUNNER_PRODUCTION_APP_ARN }}" "$REGISTRY/claude-ready-app:$TAG"
+          ./infra/aws/update-service.sh "${{ vars.APP_RUNNER_PRODUCTION_MCP_ARN }}" "$REGISTRY/claude-ready-mcp:$TAG"

@@ -1,0 +1,34 @@
+name: Nightly data sync
+
+# Calls the sync endpoint on each environment every night at 03:17 UTC.
+# Uses repository secrets/variables (not the production environment, which needs an approval
+# for every run): CRON_SECRET_STAGING, CRON_SECRET_PRODUCTION, STAGING_APP_URL, PRODUCTION_APP_URL.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    if: vars.AWS_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: staging
+            url_var: STAGING_APP_URL
+            secret: CRON_SECRET_STAGING
+          - name: production
+            url_var: PRODUCTION_APP_URL
+            secret: CRON_SECRET_PRODUCTION
+    steps:
+      - name: Trigger ${{ matrix.name }} sync (last 3 days)
+        env:
+          URL: ${{ vars[matrix.url_var] }}
+          SECRET: ${{ secrets[matrix.secret] }}
+        run: |
+          curl --fail-with-body -sS -X POST "$URL/api/cron/sync?days=3" -H "Authorization: Bearer $SECRET"

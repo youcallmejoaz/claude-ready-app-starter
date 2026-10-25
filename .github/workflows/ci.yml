@@ -1,0 +1,60 @@
+name: CI
+
+# Runs on every push and pull request: type check, unit and integration tests against a real
+# Postgres 16, a production build, and the Playwright end to end tests.
+on:
+  push:
+    branches-ignore: [staging] # the staging deploy runs this workflow itself
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: app_owner
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: app
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U app_owner -d app" --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      DEMO_MODE: "1"
+      DATABASE_URL: postgres://app_owner:ci_only_password@localhost:5432/app
+      MCP_READONLY_PASSWORD: ci_readonly
+      MCP_AUDIT_PASSWORD: ci_audit
+      MCP_READONLY_DATABASE_URL: postgres://mcp_readonly:ci_readonly@localhost:5432/app
+      MCP_AUDIT_DATABASE_URL: postgres://mcp_auditor:ci_audit@localhost:5432/app
+      AUTH_SECRET: ci-only-secret-not-used-anywhere-else
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Unit and integration tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Prepare database for end to end tests
+        run: npm run db:migrate && npm run seed
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: End to end tests
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

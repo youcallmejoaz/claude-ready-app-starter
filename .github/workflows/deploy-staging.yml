@@ -1,0 +1,52 @@
+name: Deploy to staging
+
+# Every push to the `staging` branch: run the full test suite, build both images, push them to
+# Amazon ECR and roll the two staging App Runner services. Production is never touched here.
+on:
+  push:
+    branches: [staging]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # for AWS OIDC, so no long-lived AWS keys are stored in GitHub
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: test
+    # Stays off until AWS is set up (repository variable AWS_DEPLOY_ENABLED=true).
+    if: vars.AWS_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push images
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          TAG: ${{ github.sha }}
+        run: |
+          for target in app mcp; do
+            docker build --target "$target" -t "$REGISTRY/claude-ready-$target:$TAG" .
+            docker push "$REGISTRY/claude-ready-$target:$TAG"
+          done
+      - name: Roll staging services
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          TAG: ${{ github.sha }}
+        run: |
+          ./infra/aws/update-service.sh "${{ vars.APP_RUNNER_STAGING_APP_ARN }}" "$REGISTRY/claude-ready-app:$TAG"
+          ./infra/aws/update-service.sh "${{ vars.APP_RUNNER_STAGING_MCP_ARN }}" "$REGISTRY/claude-ready-mcp:$TAG"
+      - name: Summary
+        run: echo "Staging now runs commit ${{ github.sha }}. To ship it, run 'Deploy to production' with this commit." >> "$GITHUB_STEP_SUMMARY"

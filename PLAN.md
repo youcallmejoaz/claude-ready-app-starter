@@ -106,8 +106,8 @@ clips/              Playwright recordings, cards, proposal cut
 
 ## Later (not in this build)
 
-- OAuth for the MCP server, so it can be added in the claude.ai connector screen without a
-  static token (see docs/CONNECT_CLAUDE.md).
+- OAuth for the MCP server, so each person signs in with their own account instead of sharing
+  one connector token (the token works today through the connector "Request headers" field).
 - Per-user data separation (multi-tenant). This build assumes one business per deployment.
 - Shopify and other sources.
 - Infrastructure as code (Terraform or CDK) instead of the documented CLI script.
