@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env.*
+!.env.example
+.DS_Store
+backups/
+clips/.work/
+.venv/
+*.onnx
+voices-*.bin

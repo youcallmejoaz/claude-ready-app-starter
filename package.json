@@ -1,0 +1,55 @@
+{
+  "name": "claude-ready-app-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.3.0",
+    "@auth/drizzle-adapter": "1.11.3",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "drizzle-orm": "0.45.4",
+    "libpg-query": "18.2.1",
+    "marked": "18.1.1",
+    "next": "16.4.3",
+    "next-auth": "5.0.0-beta.32",
+    "pg": "8.23.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.5",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "concurrently": "10.0.6",
+    "drizzle-kit": "0.31.11",
+    "esbuild": "0.28.2",
+    "playwright": "1.63.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n app,mcp \"next dev\" \"tsx --env-file-if-exists=.env watch mcp/server.ts\"",
+    "dev:app": "next dev",
+    "dev:mcp": "tsx --env-file-if-exists=.env watch mcp/server.ts",
+    "build": "next build && npm run build:mcp",
+    "build:mcp": "esbuild mcp/server.ts --bundle --platform=node --format=esm --target=node22 --packages=external --tsconfig=tsconfig.json --outfile=dist/mcp/server.mjs",
+    "start": "next start",
+    "mcp": "tsx --env-file-if-exists=.env mcp/server.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file-if-exists=.env scripts/migrate.ts",
+    "seed": "tsx --env-file-if-exists=.env scripts/seed.ts",
+    "sync": "tsx --env-file-if-exists=.env scripts/sync.ts",
+    "token": "tsx --env-file-if-exists=.env scripts/token.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm test"
+  }
+}
