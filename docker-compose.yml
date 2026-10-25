@@ -1,0 +1,58 @@
+# Local demo: `docker compose up`, then open http://localhost:3000
+# Runs in demo mode with sample data. No API keys needed.
+# The demo MCP token is printed once in the `setup` logs (docker compose logs setup).
+
+x-db-env: &db-env
+  DATABASE_URL: postgres://app_owner:app_owner_local@db:5432/app
+  MCP_READONLY_PASSWORD: readonly_local
+  MCP_AUDIT_PASSWORD: audit_local
+  MCP_READONLY_DATABASE_URL: postgres://mcp_readonly:readonly_local@db:5432/app
+  MCP_AUDIT_DATABASE_URL: postgres://mcp_auditor:audit_local@db:5432/app
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app_owner
+      POSTGRES_PASSWORD: app_owner_local
+      POSTGRES_DB: app
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_owner -d app"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  setup:
+    build: { context: ., target: tools }
+    environment: *db-env
+    command: sh -c "npx tsx scripts/migrate.ts && npx tsx scripts/seed.ts --if-empty"
+    depends_on:
+      db: { condition: service_healthy }
+
+  mcp:
+    build: { context: ., target: mcp }
+    environment: *db-env
+    ports: ["3001:3001"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+
+  app:
+    build: { context: ., target: app }
+    environment:
+      <<: *db-env
+      DEMO_MODE: "1"
+      RUN_MIGRATIONS: "0"
+      AUTH_SECRET: local-demo-only-not-a-real-secret-0123456789
+      AUTH_URL: http://localhost:3000
+      MCP_URL: http://mcp:3001/mcp
+      STAGING_BASIC_AUTH: ${STAGING_BASIC_AUTH:-0}
+      BASIC_AUTH_USER: ${BASIC_AUTH_USER:-}
+      BASIC_AUTH_PASSWORD: ${BASIC_AUTH_PASSWORD:-}
+    ports: ["3000:3000"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+      mcp: { condition: service_started }
+
+volumes:
+  pgdata:

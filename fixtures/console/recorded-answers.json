@@ -1,0 +1,42 @@
+{
+  "_note": "Demo mode answers. The tool calls in each entry run live against the MCP server; only the wording is pre-written. Placeholders: {{last30.start}} style dates, {{0.rows.0.name}} paths into step results (-1 = last item), filters |money |int |pct, and a / b|x for ratios.",
+  "answers": [
+    {
+      "id": "best-cost-per-conversion",
+      "match": ["cost per conversion", "cheapest conversion", "best campaign", "cpa", "best performing campaign"],
+      "question": "Which campaign had the best cost per conversion in the last 30 days?",
+      "steps": [
+        { "tool": "campaign_performance", "args": { "start": "{{last30.start}}", "end": "{{last30.end}}", "sort_by": "cost_per_conversion" } }
+      ],
+      "answer": "**{{0.rows.0.name}}** had the best cost per conversion in the last 30 days: **{{0.rows.0.cost_per_conversion|money}}** per conversion ({{0.rows.0.conversions|int}} conversions from {{0.rows.0.cost|money}} of spend).\n\n**{{0.rows.-1.name}}** is the weakest at **{{0.rows.-1.cost_per_conversion|money}}** per conversion, about {{0.rows.-1.cost_per_conversion / 0.rows.0.cost_per_conversion|x}} times as much. It is worth reviewing its budget before the next billing cycle."
+    },
+    {
+      "id": "delete-campaigns",
+      "match": ["delete", "remove all", "drop", "truncate", "wipe", "erase"],
+      "question": "Delete all campaigns.",
+      "steps": [{ "tool": "run_select", "args": { "sql": "DELETE FROM ads_campaigns" } }],
+      "answer": "I can't do that. This connector is **read only**: the delete was blocked before it reached your data, and the attempt was written to the audit log. Nothing was changed."
+    },
+    {
+      "id": "traffic",
+      "match": ["traffic", "sessions", "visitors", "how many users"],
+      "question": "How did site traffic look over the last 30 days?",
+      "steps": [{ "tool": "traffic_summary", "args": { "start": "{{last30.start}}", "end": "{{last30.end}}" } }],
+      "answer": "In the last 30 days the site had **{{0.totals.sessions|int}} sessions** from {{0.totals.users|int}} users, and **{{0.totals.conversions|int}} conversions**, a conversion rate of {{0.totals.conversion_rate|pct}}."
+    },
+    {
+      "id": "landing-pages",
+      "match": ["landing page", "which pages", "top pages", "best page"],
+      "question": "Which landing pages brought the most visits in the last 30 days?",
+      "steps": [{ "tool": "top_landing_pages", "args": { "start": "{{last30.start}}", "end": "{{last30.end}}", "limit": 5 } }],
+      "answer": "**{{0.rows.0.landing_page}}** brought the most visits ({{0.rows.0.sessions|int}} sessions), followed by **{{0.rows.1.landing_page}}** ({{0.rows.1.sessions|int}}). The full top 5 is in the table above."
+    },
+    {
+      "id": "schema",
+      "match": ["what data", "which tables", "schema", "what can you see"],
+      "question": "What data can you see?",
+      "steps": [{ "tool": "describe_schema", "args": {} }],
+      "answer": "I can read {{0.tables.length|int}} tables: Google Ads campaigns and their daily results, Google Analytics daily totals and landing pages, and the sync history. I cannot see user accounts, connector tokens or the audit log, and I cannot change anything."
+    }
+  ]
+}

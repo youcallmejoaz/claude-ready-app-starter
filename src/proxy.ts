@@ -2,10 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAuthorized, UNAUTHORIZED_HTML } from "@/lib/basic-auth";
 
 // Staging password. With STAGING_BASIC_AUTH=1 every page and API route needs the staging
-// username and password, except the health check the load balancer uses.
+// username and password, except the health check the load balancer uses and the nightly
+// sync trigger, which has its own secret (CRON_SECRET).
 export function proxy(request: NextRequest) {
   if (process.env.STAGING_BASIC_AUTH !== "1") return NextResponse.next();
-  if (request.nextUrl.pathname === "/api/health") return NextResponse.next();
+  const path = request.nextUrl.pathname;
+  if (path === "/api/health" || path === "/api/cron/sync") return NextResponse.next();
 
   const ok = isAuthorized(
     request.headers.get("authorization"),

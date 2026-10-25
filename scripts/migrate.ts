@@ -15,6 +15,8 @@ export async function runMigrations(databaseUrl = process.env.DATABASE_URL) {
   const client = new pg.Client({ connectionString: databaseUrl });
   await client.connect();
   try {
+    // Several app containers may start at once; only one migrates at a time.
+    await client.query("SELECT pg_advisory_lock(727274)");
     await migrate(drizzle(client), { migrationsFolder: "db/migrations" });
     const { rows } = await client.query<{ db: string }>("SELECT current_database() AS db");
     await setupMcpRoles(client, { database: rows[0].db, readonlyPassword, auditPassword });
