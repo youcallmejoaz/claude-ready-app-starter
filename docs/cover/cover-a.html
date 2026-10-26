@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Cover A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1600px; height: 1200px; overflow: hidden; }
+  body { background: #f8fafc; color: #0f172a; font-family: "Inter", Arial, sans-serif; position: relative; }
+  .wrap { position: absolute; inset: 70px; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+  h1 { margin: 0; font-size: 86px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 920px; }
+  h1 em { font-style: normal; color: #0f766e; }
+  .chips { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .chip { display: inline-flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 700; padding: 10px 20px; border-radius: 999px; background: #ffffff; border: 2px solid #99f6e4; color: #134e4a; }
+  .chip i { width: 12px; height: 12px; border-radius: 50%; background: #0f766e; display: inline-block; }
+  .browser { margin-top: 40px; background: #fff; border-radius: 18px; box-shadow: 0 30px 70px rgba(15, 23, 42, .14), 0 0 0 1px rgba(15, 23, 42, .08); overflow: hidden; }
+  .bar { height: 42px; background: #eef2f6; display: flex; align-items: center; gap: 9px; padding: 0 18px; border-bottom: 1px solid #e2e8f0; }
+  .bar span { width: 13px; height: 13px; border-radius: 50%; background: #cbd5e1; }
+  .bar .url { margin-left: 18px; width: 420px; height: 24px; border-radius: 6px; background: #fff; }
+  .browser img { display: block; width: 100%; }
+  .flow { margin-top: 30px; display: flex; align-items: center; gap: 16px; }
+  .node { font-size: 26px; font-weight: 700; padding: 12px 22px; border-radius: 12px; background: #fff; border: 2px solid #e2e8f0; }
+  .node.mcp { border-color: #0f766e; color: #0f766e; }
+  .arrow { color: #94a3b8; font-size: 30px; font-weight: 700; }
+  .tag { margin-left: auto; font-size: 22px; font-weight: 600; color: #475569; }
+  .tag b { color: #0f766e; }
+</style></head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Let Claude Read Your <em>Marketing Data</em></h1>
+    <div class="chips">
+      <span class="chip"><i></i>Read-only connector</span>
+      <span class="chip"><i></i>Every call audited</span>
+      <span class="chip"><i></i>Staging before production</span>
+    </div>
+  </div>
+  <div class="browser"><div class="bar"><span></span><span></span><span></span><div class="url"></div></div><img src="console.png" alt="Demo console answering which campaign had the best cost per conversion"></div>
+  <div class="flow">
+    <span class="node">App</span><span class="arrow">→</span>
+    <span class="node">Database</span><span class="arrow">→</span>
+    <span class="node mcp">Read-only MCP</span><span class="arrow">→</span>
+    <span class="node">Claude</span>
+    <span class="tag">Built with <b>Claude Code</b></span>
+  </div>
+</div>
+</body></html>

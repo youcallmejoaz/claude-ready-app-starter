@@ -1,0 +1,16 @@
+{
+  "titles": [
+    "Claude Code Ready SaaS Setup with Read-Only MCP Connector",
+    "Claude Code App Foundation: Staging, Postgres, GA4 and Ads MCP",
+    "Secure Claude MCP Connector for Google Ads and GA4 Data"
+  ],
+  "recommendedTitle": 0,
+  "role": "Full stack and MCP developer: built the app foundation, deploy pipeline and read-only connector",
+  "description": "Founders want to build with Claude Code, but have no safe foundation and Claude cannot see their marketing data. This demo build on sample data sets it up: Google sign-in, Google Ads and GA4 numbers synced into Postgres daily, a password protected staging site that deploys itself, and production deploys that wait for approval. Claude reads the data through a private MCP connector. Safeguards: read-only database role, token required, every call audited, writes blocked twice. 98 automated tests. Stack: Next.js, Postgres, MCP TypeScript SDK, GitHub Actions, AWS.",
+  "skills": ["Claude Code", "Model Context Protocol (MCP)", "Next.js", "PostgreSQL", "API Integration"],
+  "screenshots": [
+    { "file": "clips/frames/C04_console_best_cpa.png", "caption": "Claude answers which campaign has the cheapest conversions by calling the read-only connector." },
+    { "file": "clips/frames/C05_console_delete_blocked.png", "caption": "A request to delete all campaigns is blocked and written to the audit log." }
+  ],
+  "proposalSnippet": "I built a working demo of this setup: a Claude Code ready app with private staging, approved production deploys and a read-only Claude connector for Google Ads and GA4 data, here is the 60 second walkthrough: https://github.com/youcallmejoaz/claude-ready-app-starter/blob/main/clips/proposal_cut.mp4 (use View raw if it does not play). If it looks close to what you need, reply here and I'll show you how it would fit your workflow."
+}
